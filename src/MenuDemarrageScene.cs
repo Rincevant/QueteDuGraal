@@ -41,8 +41,8 @@ class MenuDemarrageScene : IScene
         background = new Sprite("background.png", new Vector2(Settings.windowWidth/2,Settings.windowHeight/2), Origin.CENTER);
 
         // Load Object in scene
-        buttonStart = new Button("buttonStart", new Vector2(Settings.windowWidth/2,Settings.windowHeight/2), Origin.CENTER, "buttonStartSound");
-        buttonQuit = new Button("buttonQuit", new Vector2(Settings.windowWidth/2,Settings.windowHeight/2 + 100), Origin.CENTER, "buttonStartSound");
+        buttonStart = new Button("btnStart", new Vector2(Settings.windowWidth/2,Settings.windowHeight/2 - 50), Origin.CENTER, "buttonStartSound");
+        buttonQuit = new Button("btnQuit", new Vector2(Settings.windowWidth/2,Settings.windowHeight/2 + 50), Origin.CENTER, "buttonStartSound");
 
         // Music
         music = Raylib.LoadMusicStream("resources/Shadowed_Catacombs.mp3");

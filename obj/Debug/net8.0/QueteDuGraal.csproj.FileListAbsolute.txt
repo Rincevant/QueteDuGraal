@@ -20,3 +20,4 @@ C:\Users\peron\OneDrive\Documents\QueteDuGraal\obj\Debug\net8.0\refint\QueteDuGr
 C:\Users\peron\OneDrive\Documents\QueteDuGraal\obj\Debug\net8.0\QueteDuGraal.pdb
 C:\Users\peron\OneDrive\Documents\QueteDuGraal\obj\Debug\net8.0\QueteDuGraal.genruntimeconfig.cache
 C:\Users\peron\OneDrive\Documents\QueteDuGraal\obj\Debug\net8.0\ref\QueteDuGraal.dll
+C:\Users\peron\OneDrive\Documents\QueteDuGraal\obj\Debug\net8.0\QueteDuGraal.sourcelink.json

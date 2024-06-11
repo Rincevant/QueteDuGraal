@@ -15,7 +15,7 @@ public class Button {
         loadSpriteButton(name, position, origin);
     }
     public void displayButton() {      
-        if(_state == 0) {
+        if(_state == 0) {            
             Raylib.DrawTexturePro(idle._texture, idle.Rect, idle.Dest, idle._origin, 0, Color.White);
         } else if(_state == 1) {
             Raylib.DrawTexturePro(onHover._texture, onHover.Rect, onHover.Dest, onHover._origin, 0, Color.White);
