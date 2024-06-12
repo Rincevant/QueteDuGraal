@@ -16,7 +16,7 @@ public class Sprite
         get { return new Rectangle((int)_position.X, (int)_position.Y, _texture.Width, _texture.Height); }
     }
 
-    private string textureBasePath = "resources/";
+    private string textureBasePath = "Resources/";
     public Sprite(string textureName, Vector2 position, Origin origin)
     {
         _texture = Raylib.LoadTexture(textureBasePath + textureName);

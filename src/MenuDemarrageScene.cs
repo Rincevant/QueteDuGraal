@@ -45,7 +45,7 @@ class MenuDemarrageScene : IScene
         buttonQuit = new Button("btnQuit", new Vector2(Settings.windowWidth/2,Settings.windowHeight/2 + 50), Origin.CENTER, "buttonStartSound");
 
         // Music
-        music = Raylib.LoadMusicStream("resources/Shadowed_Catacombs.mp3");
+        music = Raylib.LoadMusicStream("Resources/Shadowed_Catacombs.mp3");
         Raylib.SetMusicVolume(music, (float)0.5);
         Raylib.PlayMusicStream(music);
     }

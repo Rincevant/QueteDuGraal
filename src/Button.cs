@@ -11,7 +11,7 @@ public class Button {
     public Button (string name, Vector2 position, Origin origin, string fxButtonName) {        
         _state = 0;
         _position = position;
-        fxButton = Raylib.LoadSound("resources/"+fxButtonName+".wav");
+        fxButton = Raylib.LoadSound("Resources/"+fxButtonName+".wav");
         loadSpriteButton(name, position, origin);
     }
     public void displayButton() {      

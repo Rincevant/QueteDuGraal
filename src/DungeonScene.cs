@@ -10,11 +10,15 @@ public class DungeonScene : IScene
 
     Button buttonWalk;
 
+    Music music;
+
     // 14 Max dans l'affichage actuel
     List<string> logs = new List<string>();
 
     int logPagin = 0;
     int count = 0;
+
+    int gold = 0;
 
     // Constructeur qui porte le nom de la scene
     public DungeonScene() : base(ListeScene.SCENE_DUNGEON){
@@ -33,7 +37,7 @@ public class DungeonScene : IScene
         Raylib.DrawText("Le cimetière", Settings.windowWidth/2 - 100, 100, 30, Color.White);
 
         Raylib.DrawText("Points de vie : 5/5", 100, 230, 20, Color.White);
-        Raylib.DrawText("Or : 126 pièces", 780, 230, 20, Color.White);
+        Raylib.DrawText("Or : "+gold+" pièces", 780, 230, 20, Color.White);
 
         Rectangle textBox = new Rectangle(Settings.windowWidth / 2, Settings.windowWidth / 2, 800, 400);        
         Raylib.DrawRectanglePro(textBox, new Vector2(400,200), 0, Color.DarkGray);
@@ -41,7 +45,11 @@ public class DungeonScene : IScene
         cadreDonjon.DrawSprite(0, Color.White);
 
         int heightLog = 200;
-        for (int i = logPagin; i < logs.Count; i++)
+        int start = 0;
+        if (logs.Count - 13 > 0) {
+            start = logs.Count - 13;
+        }
+        for (int i = start; i < logs.Count; i++)
         {
             Raylib.DrawText(logs[i], (int)textBox.X - 390, (int)textBox.Y + 10 - heightLog, 20, Color.White);
             heightLog -= 30;
@@ -63,7 +71,12 @@ public class DungeonScene : IScene
 
         buttonWalk = new Button("btnAvancer", new Vector2(Settings.windowWidth/2, 800), Origin.CENTER, "buttonStartSound");
 
-        logs.Add("Vous découvrez le cimetière. Une brume epaisse vous entoure.");
+        logs.Add(count + ": Vous découvrez le cimetière. Une brume epaisse vous entoure.");
+
+        // Music
+        music = Raylib.LoadMusicStream("Resources/Shadowed_Catacombs.mp3");
+        Raylib.SetMusicVolume(music, (float)0.5);
+        Raylib.PlayMusicStream(music);
 
     }
 
@@ -74,23 +87,28 @@ public class DungeonScene : IScene
 
     public override void  Update()
     {
+         // Play music
+        Raylib.UpdateMusicStream(music);
+
         if(buttonWalk.IsButtonPressed()) {
             Random generator = new Random();
             int eventValue  = generator.Next(1, 10);
 
             if(eventValue >= 1 && eventValue <= 4) {
                 // Coffre
-                logs.Add("Vous découvez un coffre.");
+                count++;
+                logs.Add(count + ": Vous découvez un coffre.");                
+                eventValue  = generator.Next(1, 100);
+                
+                count++;
+                logs.Add(count + ": A l'intérieur ce trouve "+eventValue+" pièces d'or.");
+                gold += eventValue;
             } 
 
             if(eventValue >= 5 && eventValue <= 10) {
                 // Ennemi
-                logs.Add("En garde un ennemi vous attaque !");
-            }
-
-            count++;            
-            if(logs.Count >= 14) {
-                logPagin = logPagin + 1;
+                count++;
+                logs.Add(count + ": En garde un ennemi vous attaque !");
             }
         }
     }

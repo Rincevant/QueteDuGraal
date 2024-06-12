@@ -27,7 +27,7 @@ class TileMap
     {
         get { return new Rectangle((int)position.X, (int)position.Y, tileSizeWidth, tileSizeHeight); }
     }*/
-    private string textureBasePath = "resources/";
+    private string textureBasePath = "Resources/";
 
     public TileMap(string textureName, int tileSizeWidth, int tileSizeHeight, int nbRow, int nbCol)
     {
