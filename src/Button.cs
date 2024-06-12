@@ -8,6 +8,9 @@ public class Button {
     public Vector2 _position;
     public int _state;
     public Sound fxButton;
+
+    public bool disable = false;
+
     public Button (string name, Vector2 position, Origin origin, string fxButtonName) {        
         _state = 0;
         _position = position;
@@ -43,6 +46,11 @@ public class Button {
     }
 
     public bool IsButtonPressed() {
+        if(disable) {
+            _state = 0;
+            return false;
+        }
+
         Vector2 mousePoint = Raylib.GetMousePosition(); 
         if (Raylib.CheckCollisionPointRec(mousePoint, GetDestCollisionRec())) {
                 // On Hover

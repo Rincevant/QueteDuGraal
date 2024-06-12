@@ -10,6 +10,8 @@ public class DungeonScene : IScene
 
     Button buttonWalk;
 
+    Button buy;
+
     Music music;
 
     // 14 Max dans l'affichage actuel
@@ -19,6 +21,7 @@ public class DungeonScene : IScene
     int count = 0;
 
     int gold = 0;
+    int life = 10;
 
     // Constructeur qui porte le nom de la scene
     public DungeonScene() : base(ListeScene.SCENE_DUNGEON){
@@ -36,7 +39,7 @@ public class DungeonScene : IScene
 
         Raylib.DrawText("Le cimetière", Settings.windowWidth/2 - 100, 100, 30, Color.White);
 
-        Raylib.DrawText("Points de vie : 5/5", 100, 230, 20, Color.White);
+        Raylib.DrawText("Points de vie : "+life+"/10", 100, 230, 20, Color.White);
         Raylib.DrawText("Or : "+gold+" pièces", 780, 230, 20, Color.White);
 
         Rectangle textBox = new Rectangle(Settings.windowWidth / 2, Settings.windowWidth / 2, 800, 400);        
@@ -56,6 +59,7 @@ public class DungeonScene : IScene
         }
 
         buttonWalk.displayButton();
+        buy.displayButton();
         
         // End
         Raylib.EndDrawing();
@@ -69,7 +73,8 @@ public class DungeonScene : IScene
         background = new Sprite("background.png", new Vector2(Settings.windowWidth/2,Settings.windowHeight/2), Origin.CENTER);
         cadreDonjon = new Sprite("cadreDonjon.png", new Vector2(Settings.windowWidth/2,Settings.windowHeight/2), Origin.CENTER);
 
-        buttonWalk = new Button("btnAvancer", new Vector2(Settings.windowWidth/2, 800), Origin.CENTER, "buttonStartSound");
+        buttonWalk = new Button("btnAvancer", new Vector2(Settings.windowWidth/2 - 150, 800), Origin.CENTER, "buttonStartSound");
+        buy = new Button("btnBuy", new Vector2(Settings.windowWidth/2 + 150, 800), Origin.CENTER, "buttonStartSound");
 
         logs.Add(count + ": Vous découvrez le cimetière. Une brume epaisse vous entoure.");
 
@@ -91,25 +96,62 @@ public class DungeonScene : IScene
         Raylib.UpdateMusicStream(music);
 
         if(buttonWalk.IsButtonPressed()) {
-            Random generator = new Random();
-            int eventValue  = generator.Next(1, 10);
+            int eventValue  = getRandomNumber(1, 10);
 
-            if(eventValue >= 1 && eventValue <= 4) {
-                // Coffre
-                count++;
-                logs.Add(count + ": Vous découvez un coffre.");                
-                eventValue  = generator.Next(1, 100);
-                
-                count++;
-                logs.Add(count + ": A l'intérieur ce trouve "+eventValue+" pièces d'or.");
-                gold += eventValue;
-            } 
+            if(eventValue >= 1 && eventValue <= 6) {
 
-            if(eventValue >= 5 && eventValue <= 10) {
+                int eventCoffre  = getRandomNumber(1, 100);
+                if(eventCoffre >=1 && eventCoffre <= 5) {
+                    // Graal
+                    count++;
+                    logs.Add(count + ": Vous avez trouvé le Saint Graal.");
+                    buttonWalk.disable = true;
+                }else if(eventCoffre >=6 && eventCoffre <= 100) {
+                    // Coffre
+                    count++;
+                    logs.Add(count + ": Vous découvez un coffre.");                
+                    int goldGagne  = getRandomNumber(1, 70);
+                    
+                    count++;
+                    logs.Add(count + ": A l'intérieur ce trouve "+goldGagne+" pièces d'or.");
+                    gold += goldGagne;
+                }                
+            } else if(eventValue >= 7 && eventValue <= 10) {
                 // Ennemi
                 count++;
                 logs.Add(count + ": En garde un ennemi vous attaque !");
+
+                count++;
+                logs.Add(count + ": Vous perdez 1 point de vie mais votre ennemi est mort !");
+
+                life--;
             }
         }
+    
+    
+        if(buy.IsButtonPressed()) {
+            if(gold >= 150) {
+                // Achat potion
+                count++;
+                logs.Add(count + ": Vous achetez une potion de vie (+2).");
+
+                if(life + 2 >= 10) {
+                    life = 10;
+                } else {
+                    life += 2;
+                }
+
+                gold -= 150;
+            } else {
+                // Achat potion
+                count++;
+                logs.Add(count + ": Vous n'avez pas assez de pièces d'or (150 requis).");
+            }
+        }
+    }
+
+    public int getRandomNumber(int start, int end) {
+        Random generator = new Random();
+        return generator.Next(start, end);
     }
 }
