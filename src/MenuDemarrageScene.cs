@@ -1,4 +1,3 @@
-using System.Numerics;
 using Raylib_cs;
 
 class MenuDemarrageScene : IScene
@@ -10,11 +9,24 @@ class MenuDemarrageScene : IScene
         sceneManager = SceneManager.GetInstance();
     }
 
+    // Buttons
     Button buttonStart;
     Button buttonQuit;
+    Button buttonOptions;
+
+    // Sprites
     Sprite background;
     
-    Music music; 
+    // Texts
+    Text titre;
+
+    // Sounds
+    Music music;
+
+    // Scenes Enfant
+    IScene optionsScene;
+    
+    bool optionsWindows = false;
 
     public override void Draw()
     {
@@ -24,11 +36,17 @@ class MenuDemarrageScene : IScene
         Raylib.ClearBackground(Color.Black);
         
         background.DrawSprite(0, Color.White);
-        Raylib.DrawText("Quête du graal", Settings.windowWidth/2 - 120, 100, 30, Color.White);
+
+        titre.DrawTexte();
         
         buttonStart.displayButton();
         buttonQuit.displayButton();
-        
+        buttonOptions.displayButton();
+
+        if (optionsWindows) {
+            sceneManager.GetSceneByName(ListeScene.OPTIONS).Draw();
+        }
+
         // End
         Raylib.EndDrawing();
     }
@@ -37,12 +55,18 @@ class MenuDemarrageScene : IScene
     {
         Console.WriteLine("Scene Demarrage load");
 
+        sceneManager.AddScene(new OptionsScene(), false);
+
         // Load texture / sprites
-        background = new Sprite("background.png", new Vector2(Settings.windowWidth/2,Settings.windowHeight/2), Origin.CENTER);
+        background = new Sprite("background.png", Settings.initwindowWidth / 2, Settings.initwindowHeight / 2, Origin.CENTER);
 
         // Load Object in scene
-        buttonStart = new Button("btnStart", new Vector2(Settings.windowWidth/2,Settings.windowHeight/2 - 50), Origin.CENTER, "buttonStartSound");
-        buttonQuit = new Button("btnQuit", new Vector2(Settings.windowWidth/2,Settings.windowHeight/2 + 50), Origin.CENTER, "buttonStartSound");
+        buttonStart = new Button("startBtn.png", 1000, 250, Origin.CENTER, "buttonStartSound");
+        buttonQuit = new Button("quitBtn.png", 1000, 330, Origin.CENTER, "buttonStartSound");
+        buttonOptions = new Button("optBtn.png", 1000, 410, Origin.CENTER, "buttonStartSound");
+
+        // Text
+        titre = new Text("Quête du graal", 880, 100, 30, Color.White);
 
         // Music
         music = Raylib.LoadMusicStream("Resources/Shadowed_Catacombs.mp3");
@@ -57,13 +81,24 @@ class MenuDemarrageScene : IScene
         
         // Buttons
         if (buttonStart.IsButtonPressed()) {
-            sceneManager.AddScene(new DungeonScene());
+            sceneManager.AddScene(new DungeonScene(), true);            
         }
 
         if (buttonQuit.IsButtonPressed()) {
             Raylib.WaitTime(0.5);
             Game.quit = true;
-        }           
+        }
+
+        if (buttonOptions.IsButtonPressed())
+        {
+            optionsWindows = true;
+        }
+
+
+        if(optionsWindows)
+        {
+            sceneManager.GetSceneByName(ListeScene.OPTIONS).Update();
+        }
     }
     public override void UnloadScene() {
         Console.WriteLine("Unload scene " + ListeScene.SCENE_DEMARRAGE);

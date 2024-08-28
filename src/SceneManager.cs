@@ -18,11 +18,18 @@ class SceneManager
         return instance;
     }
 
-    public void AddScene(IScene newScene)
+    public void AddScene(IScene newScene, bool isCurrent)
     {
         newScene.LoadScene();
         scenes.Push(newScene);
-        currentScene = newScene;
+        if (isCurrent) {
+            currentScene = newScene;
+        }        
+    }
+
+    public void LoadActualScene()
+    {
+        this.currentScene.LoadScene();
     }
 
     public void RemoveScene(string name)
