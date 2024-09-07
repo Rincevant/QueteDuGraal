@@ -12,8 +12,8 @@ public class Text
     public Text(string text, int posX, int posY, int fontSize, Color color)
     {
         _text = text;
-        _position = new Vector2(posX * Settings.getScale(), posY * Settings.getScale());
-        _fontSize = (int)(fontSize * Settings.getScale());
+        _position = new Vector2(posX * Settings.GetScale(), posY * Settings.GetScale());
+        _fontSize = (int)(fontSize * Settings.GetScale());
         _color = color;
     }
 

@@ -2,10 +2,10 @@ using System.Numerics;
 using Raylib_cs;
 
 public class Button {
-    public Sprite idle;
+    public Sprite _idle;
     public Vector2 _position;
     public int _state;
-    public Sound fxButton;
+    public Sound _fxButton;
 
     public bool disable = false;
 
@@ -16,34 +16,34 @@ public class Button {
         sourceRectangle = new Rectangle();
         destRectangle = new Rectangle();
         _state = 0;
-        _position = new Vector2(posX * Settings.getScale(), posY * Settings.getScale());
-        fxButton = Raylib.LoadSound("Resources/"+fxButtonName+".wav");
-        loadSpriteButton(name, posX, posY, origin);
+        _position = new Vector2(posX * Settings.GetScale(), posY * Settings.GetScale());
+        _fxButton = Raylib.LoadSound("Resources/"+fxButtonName+".wav");
+        LoadSpriteButton(name, posX, posY, origin);
     }
-    public void displayButton() {
-        destRectangle = new Rectangle(_position.X, _position.Y, idle._texture.Width * Settings.getScale(), (idle._texture.Height / 2) * Settings.getScale());
+    public void DisplayButton() {
+        destRectangle = new Rectangle(_position.X, _position.Y, _idle._texture.Width * Settings.GetScale(), (_idle._texture.Height / 2) * Settings.GetScale());
 
         if (_state == 0) { 
-            sourceRectangle = new Rectangle(0, 0, idle._texture.Width,  idle._texture.Height / 2 );            
-            Raylib.DrawTexturePro(idle._texture, sourceRectangle, destRectangle, idle._origin, 0, Color.White);
+            sourceRectangle = new Rectangle(0, 0, _idle._texture.Width,  _idle._texture.Height / 2 );            
+            Raylib.DrawTexturePro(_idle._texture, sourceRectangle, destRectangle, _idle._origin, 0, Color.White);
         } else if(_state == 1) {
-            sourceRectangle = new Rectangle(0, idle._texture.Height / 2, idle._texture.Width, idle._texture.Height / 2);
-            Raylib.DrawTexturePro(idle._texture, sourceRectangle, destRectangle, idle._origin, 0, Color.White);
+            sourceRectangle = new Rectangle(0, _idle._texture.Height / 2, _idle._texture.Width, _idle._texture.Height / 2);
+            Raylib.DrawTexturePro(_idle._texture, sourceRectangle, destRectangle, _idle._origin, 0, Color.White);
         }     
     }
-    private void loadSpriteButton(string name, int posX, int posY, Origin origin) {
-        idle = new Sprite(name, posX, posY, origin);
+    private void LoadSpriteButton(string name, int posX, int posY, Origin origin) {
+        _idle = new Sprite(name, posX, posY, origin);
     }
     public void PlaySound() {
-        Raylib.PlaySound(fxButton);
+        Raylib.PlaySound(_fxButton);
     }
 
     public void UnloadButton() {
         Console.WriteLine("Unload button");
-        idle.unloadTexture();
+        _idle.unloadTexture();
     }
     public Rectangle GetDestCollisionRec() {
-        return idle.GetDestCollisionButton();
+        return _idle.GetDestCollisionButton();
     }
 
     public bool IsButtonPressed() {

@@ -19,19 +19,19 @@ public class DungeonScene : IScene
 
     Rectangle textBox;
 
+    Hero _hero;
+
     // 14 Max dans l'affichage actuel
     List<string> logs = new List<string>();
 
-    int logPagin = 0;
     int count = 0;
-    
-
     int gold = 0;
     int life = 10;
 
     // Constructeur qui porte le nom de la scene
-    public DungeonScene() : base(ListeScene.SCENE_DUNGEON){
+    public DungeonScene(Hero hero) : base(ListeScene.SCENE_DUNGEON){
         sceneManager = SceneManager.GetInstance();
+        _hero = hero;
     }
 
     public override void Draw()
@@ -40,15 +40,15 @@ public class DungeonScene : IScene
         Raylib.BeginDrawing();
 
         Raylib.ClearBackground(Color.Black);    
-        background.DrawSprite(0, Color.White);
+        background.DrawSprite(0, Color.White, 1);
 
         titreText.DrawTexte();
         vieText.DrawTexteWithData(life.ToString());
         goldText.DrawTexteWithData(gold.ToString());
          
-        Raylib.DrawRectanglePro(textBox, new Vector2(410 * Settings.getScale(),210 * Settings.getScale()), 0, Color.DarkGray);
+        Raylib.DrawRectanglePro(textBox, new Vector2(410 * Settings.GetScale(),210 * Settings.GetScale()), 0, Color.DarkGray);
 
-        cadreDonjon.DrawSprite(0, Color.White);
+        cadreDonjon.DrawSprite(0, Color.White, 1);
 
         int heightLog = 200;
         int start = 0;
@@ -58,12 +58,12 @@ public class DungeonScene : IScene
         for (int i = start; i < logs.Count; i++)
         {
             //logText.DrawTexteWithData(logs[i]);
-            Raylib.DrawText(logs[i], (int)(250 * Settings.getScale()), (int)((360 + 10 - heightLog) * Settings.getScale()), (int)(20 * Settings.getScale()), Color.White);
+            Raylib.DrawText(logs[i], (int)(250 * Settings.GetScale()), (int)((360 + 10 - heightLog) * Settings.GetScale()), (int)(20 * Settings.GetScale()), Color.White);
             heightLog -= 30;
         }
 
-        buttonWalk.displayButton();
-        buy.displayButton();
+        buttonWalk.DisplayButton();
+        buy.DisplayButton();
 
         // End
         Raylib.EndDrawing();
@@ -78,11 +78,11 @@ public class DungeonScene : IScene
         cadreDonjon = new Sprite("cadreDonjon.png", Settings.initwindowWidth / 2, Settings.initwindowHeight/2, Origin.CENTER);
 
         // Button
-        buttonWalk = new Button("avancerBtn.png", Settings.initwindowWidth / 2 - 150,  650 , Origin.CENTER, "buttonStartSound");
-        buy = new Button("buyBtn.png", Settings.initwindowWidth/2 + 150, 650, Origin.CENTER, "buttonStartSound");
+        buttonWalk = new Button("avancerBtn.png", Settings.initwindowWidth / 2 - 150,  680 , Origin.CENTER, "buttonStartSound");
+        buy = new Button("buyBtn.png", Settings.initwindowWidth/2 + 150, 680, Origin.CENTER, "buttonStartSound");
 
         // Gray textbox
-        textBox = new Rectangle(Settings.windowWidth / 2, Settings.windowHeight / 2, 820 * Settings.getScale(), 420 * Settings.getScale());
+        textBox = new Rectangle(Settings.windowWidth / 2, Settings.windowHeight / 2, 820 * Settings.GetScale(), 420 * Settings.GetScale());
 
         // Text
         titreText = new Text("Le cimetière", Settings.initwindowWidth / 2 - 100, 50, 30, Color.White);
@@ -118,7 +118,9 @@ public class DungeonScene : IScene
                     // Graal
                     count++;
                     logs.Add(count + ": Vous avez trouvé le Saint Graal.");
-                    resetDungeon();
+                    //resetDungeon();
+                    buttonWalk.disable = true;
+                    buy.disable = true;
                 }else if(eventCoffre >=6 && eventCoffre <= 100) {
                     // Coffre
                     count++;
@@ -172,5 +174,10 @@ public class DungeonScene : IScene
     {
         logs.Clear();
         gold = 0;
+    }
+
+    public override void SignalToScene(string actionName)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -23,9 +23,6 @@ class MenuDemarrageScene : IScene
     // Sounds
     Music music;
 
-    // Scenes Enfant
-    IScene optionsScene;
-    
     bool optionsWindows = false;
 
     public override void Draw()
@@ -35,13 +32,13 @@ class MenuDemarrageScene : IScene
 
         Raylib.ClearBackground(Color.Black);
         
-        background.DrawSprite(0, Color.White);
+        background.DrawSprite(0, Color.White, 1);
 
         titre.DrawTexte();
         
-        buttonStart.displayButton();
-        buttonQuit.displayButton();
-        buttonOptions.displayButton();
+        buttonStart.DisplayButton();
+        buttonQuit.DisplayButton();
+        buttonOptions.DisplayButton();
 
         if (optionsWindows) {
             sceneManager.GetSceneByName(ListeScene.OPTIONS).Draw();
@@ -58,7 +55,7 @@ class MenuDemarrageScene : IScene
         sceneManager.AddScene(new OptionsScene(), false);
 
         // Load texture / sprites
-        background = new Sprite("background.png", Settings.initwindowWidth / 2, Settings.initwindowHeight / 2, Origin.CENTER);
+        background = new Sprite("background.png", 640, 360, Origin.CENTER);
 
         // Load Object in scene
         buttonStart = new Button("startBtn.png", 1000, 250, Origin.CENTER, "buttonStartSound");
@@ -80,8 +77,8 @@ class MenuDemarrageScene : IScene
         Raylib.UpdateMusicStream(music);
         
         // Buttons
-        if (buttonStart.IsButtonPressed()) {
-            sceneManager.AddScene(new DungeonScene(), true);            
+        if (buttonStart.IsButtonPressed()) {           
+            sceneManager.AddScene(new CreateCharacterScene(), true);
         }
 
         if (buttonQuit.IsButtonPressed()) {
@@ -104,5 +101,13 @@ class MenuDemarrageScene : IScene
         Console.WriteLine("Unload scene " + ListeScene.SCENE_DEMARRAGE);
         background.unloadTexture();
         buttonStart.UnloadButton();        
+    }
+
+    public override void SignalToScene(string actionName)
+    {
+        if(actionName.Equals("closeOptions"))
+        {
+            optionsWindows = false;
+        }
     }
 }

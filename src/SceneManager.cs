@@ -59,7 +59,7 @@ class SceneManager
         return currentScene;
     }
 
-    public IScene? GetSceneByName(string name) {
+    public IScene GetSceneByName(string name) {
         foreach (IScene scene in scenes)
         {
             if(scene.sceneName.Equals(name)){

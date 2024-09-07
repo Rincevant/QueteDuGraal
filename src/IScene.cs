@@ -8,6 +8,7 @@ public abstract class IScene
     public abstract void Update();
     public abstract void Draw();
     public abstract void UnloadScene();
+    public abstract void SignalToScene(string actionName);
     public IScene(string name) {
         sceneName = name;
     }
