@@ -8,22 +8,33 @@ public class Text
     public Color _color;
     public int _fontSize;
 
-    
+    public virtual Vector2 Position
+    {
+        get { return new Vector2(_position.X * Settings.GetScale(), _position.Y * Settings.GetScale()); }
+        set { }
+    }
+
+    public virtual int FontSize
+    {
+        get { return (int)(_fontSize * Settings.GetScale()); }
+        set { }
+    }
+
     public Text(string text, int posX, int posY, int fontSize, Color color)
     {
         _text = text;
-        _position = new Vector2(posX * Settings.GetScale(), posY * Settings.GetScale());
-        _fontSize = (int)(fontSize * Settings.GetScale());
+        _position = new Vector2(posX, posY);
+        _fontSize = fontSize;
         _color = color;
     }
 
     public void DrawTexte()
     {
-        Raylib.DrawText(_text, (int)_position.X, (int)_position.Y, _fontSize, _color);
+        Raylib.DrawText(_text, (int)Position.X, (int)Position.Y, FontSize, _color);
     }
 
     public void DrawTexteWithData(string data)
     {
-        Raylib.DrawText(_text.Replace("{}", data), (int)_position.X, (int)_position.Y, _fontSize, _color);
+        Raylib.DrawText(_text.Replace("{}", data), (int)Position.X, (int)Position.Y, FontSize, _color);
     }
 }

@@ -23,6 +23,7 @@ class MenuDemarrageScene : IScene
     // Sounds
     Music music;
 
+    OptionsScene optionsScene;
     bool optionsWindows = false;
 
     public override void Draw()
@@ -41,7 +42,7 @@ class MenuDemarrageScene : IScene
         buttonOptions.DisplayButton();
 
         if (optionsWindows) {
-            sceneManager.GetSceneByName(ListeScene.OPTIONS).Draw();
+            optionsScene.Draw();
         }
 
         // End
@@ -50,9 +51,7 @@ class MenuDemarrageScene : IScene
 
     public override void LoadScene()
     {
-        Console.WriteLine("Scene Demarrage load");
-
-        sceneManager.AddScene(new OptionsScene(), false);
+        Console.WriteLine("Scene Demarrage load");        
 
         // Load texture / sprites
         background = new Sprite("background.png", 640, 360, Origin.CENTER);
@@ -64,6 +63,10 @@ class MenuDemarrageScene : IScene
 
         // Text
         titre = new Text("Quête du graal", 880, 100, 30, Color.White);
+
+        // Scenes enfant
+        optionsScene = new OptionsScene();
+        optionsScene.LoadScene();
 
         // Music
         music = Raylib.LoadMusicStream("Resources/Shadowed_Catacombs.mp3");
@@ -94,7 +97,7 @@ class MenuDemarrageScene : IScene
 
         if(optionsWindows)
         {
-            sceneManager.GetSceneByName(ListeScene.OPTIONS).Update();
+            optionsScene.Update();
         }
     }
     public override void UnloadScene() {

@@ -8,12 +8,15 @@ public class DungeonScene : IScene
     Sprite background;
     Sprite cadreDonjon;
 
+    // Butons
     Button buttonWalk;
     Button buy;
+    Button buttonOptions;
 
     Text titreText;
     Text vieText;
     Text goldText;
+    Text _heroName;
 
     Music music;
 
@@ -23,6 +26,10 @@ public class DungeonScene : IScene
 
     // 14 Max dans l'affichage actuel
     List<string> logs = new List<string>();
+
+    // Scene enfant
+    OptionsScene optionsScene;
+    bool optionsWindows = false;
 
     int count = 0;
     int gold = 0;
@@ -46,9 +53,11 @@ public class DungeonScene : IScene
         vieText.DrawTexteWithData(life.ToString());
         goldText.DrawTexteWithData(gold.ToString());
          
-        Raylib.DrawRectanglePro(textBox, new Vector2(410 * Settings.GetScale(),210 * Settings.GetScale()), 0, Color.DarkGray);
+        Raylib.DrawRectanglePro(new Rectangle(textBox.X * Settings.GetScale(), textBox.Y * Settings.GetScale(), textBox.Width * Settings.GetScale(), textBox.Height * Settings.GetScale()), new Vector2(410 * Settings.GetScale(),210 * Settings.GetScale()), 0, Color.DarkGray);
 
         cadreDonjon.DrawSprite(0, Color.White, 1);
+        _hero._portrait.DrawSprite(0, Color.White, 0.1f);
+        _heroName.DrawTexte();
 
         int heightLog = 200;
         int start = 0;
@@ -57,13 +66,18 @@ public class DungeonScene : IScene
         }
         for (int i = start; i < logs.Count; i++)
         {
-            //logText.DrawTexteWithData(logs[i]);
             Raylib.DrawText(logs[i], (int)(250 * Settings.GetScale()), (int)((360 + 10 - heightLog) * Settings.GetScale()), (int)(20 * Settings.GetScale()), Color.White);
             heightLog -= 30;
         }
 
         buttonWalk.DisplayButton();
         buy.DisplayButton();
+        buttonOptions.DisplayButton();
+
+        if (optionsWindows)
+        {
+            optionsScene.Draw();
+        }
 
         // End
         Raylib.EndDrawing();
@@ -78,24 +92,32 @@ public class DungeonScene : IScene
         cadreDonjon = new Sprite("cadreDonjon.png", Settings.initwindowWidth / 2, Settings.initwindowHeight/2, Origin.CENTER);
 
         // Button
-        buttonWalk = new Button("avancerBtn.png", Settings.initwindowWidth / 2 - 150,  680 , Origin.CENTER, "buttonStartSound");
-        buy = new Button("buyBtn.png", Settings.initwindowWidth/2 + 150, 680, Origin.CENTER, "buttonStartSound");
+        buttonWalk = new Button("avancerBtn.png", 490,  680 , Origin.CENTER, "buttonStartSound");
+        buy = new Button("buyBtn.png", 790, 680, Origin.CENTER, "buttonStartSound");
+        buttonOptions = new Button("optIconBtn.png", 50, 100, Origin.CENTER, "buttonStartSound");
 
         // Gray textbox
-        textBox = new Rectangle(Settings.windowWidth / 2, Settings.windowHeight / 2, 820 * Settings.GetScale(), 420 * Settings.GetScale());
+        textBox = new Rectangle(640, 360, 820, 420);
 
         // Text
-        titreText = new Text("Le cimetière", Settings.initwindowWidth / 2 - 100, 50, 30, Color.White);
+        titreText = new Text("Le cimetière", 540, 50, 30, Color.White);
         vieText = new Text("Points de vie : {}/10", 220, 100, 20, Color.White);
-        goldText = new Text("Or : {}", 950, 100, 20, Color.White);
+        goldText = new Text("Or : {}", 950, 100, 20, Color.White);       
 
+        // Hero
+        _hero._portrait._position = new Vector2(1150, 100);
+        _heroName = new Text(_hero._name, 1150 - (Raylib.MeasureText(_hero._name, 20) / 2), 150, 20, Color.White);
 
-        logs.Add(count + ": Vous découvrez le cimetière. Une brume epaisse vous entoure.");
+        logs.Add(count + ": Vous découvrez le cimetière. Une brume epaisse vous entoure.");        
 
         // Music
         music = Raylib.LoadMusicStream("Resources/Shadowed_Catacombs.mp3");
         Raylib.SetMusicVolume(music, (float)0.5);
         Raylib.PlayMusicStream(music);
+
+        // Scenes enfant
+        optionsScene = new OptionsScene();
+        optionsScene.LoadScene();
     }
 
     public override void UnloadScene()
@@ -108,7 +130,17 @@ public class DungeonScene : IScene
          // Play music
         Raylib.UpdateMusicStream(music);
 
-        if(buttonWalk.IsButtonPressed()) {
+        if (buttonOptions.IsButtonPressed())
+        {
+            optionsWindows = true;
+        }
+
+        if (optionsWindows)
+        {
+            optionsScene.Update();
+        }
+
+        if (buttonWalk.IsButtonPressed()) {
             int eventValue  = getRandomNumber(1, 10);
 
             if(eventValue >= 1 && eventValue <= 6) {
@@ -178,6 +210,9 @@ public class DungeonScene : IScene
 
     public override void SignalToScene(string actionName)
     {
-        throw new NotImplementedException();
+        if (actionName.Equals("closeOptions"))
+        {
+            optionsWindows = false;
+        }
     }
 }

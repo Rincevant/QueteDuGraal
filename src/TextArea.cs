@@ -2,55 +2,69 @@
 using System.Numerics;
 class TextArea
 {
-    public string text;
-    Vector2 origin;
-    Vector2 position;
-    int width;
-    int height;
+    public string _text;
+    Vector2 _origin;
+    Vector2 _position;
+    int _width;
+    int _height;
 
-    int maxLength;
-    int framesCounter = 0;
+    int _maxLength;
+    int _framesCounter = 0;
 
-    protected virtual Rectangle textBox
+    protected virtual Rectangle TextBox
     {
-        get { return new Rectangle((int)position.X * Settings.GetScale(), (int)position.Y * Settings.GetScale(), (float)(width * Settings.GetScale()), (float)(height * Settings.GetScale())); }
+        get { return new Rectangle((int)_position.X * Settings.GetScale(), (int)_position.Y * Settings.GetScale(), (float)(_width * Settings.GetScale()), (float)(_height * Settings.GetScale())); }
         set { }
     }
+
+    protected virtual Vector2 Position
+    {
+        get { return new Vector2(_position.X * Settings.GetScale(), _position.Y * Settings.GetScale()); }
+        set { }
+    }
+
+    protected virtual Vector2 OriginTextArea
+    {
+        get { return new Vector2(_origin.X * Settings.GetScale(), _origin.Y * Settings.GetScale()); }
+        set { }
+    }
+
+
     public TextArea(int posX, int posY, int widthTextAre, int heightTextArea, Origin ori, int max)
     {
-        maxLength = max;
-        width = widthTextAre;
-        height = heightTextArea;
-        position = new Vector2(posX, posY);
-        origin = GetOriginVecFromEnum(ori);
-        text = "";
+        _maxLength = max;
+        _width = widthTextAre;
+        _height = heightTextArea;
+        _position = new Vector2(posX, posY);
+        _origin = GetOriginVecFromEnum(ori);
+        _text = "";
     }
 
     public void DisplayTextArea()
     {
         // Draw principal rectangle
-        Raylib.DrawRectanglePro(textBox, origin, 0, Color.LightGray);
+        Raylib.DrawRectanglePro(TextBox, OriginTextArea, 0, Color.LightGray);
 
         // Draw outliner
         if (IsTextAreaOnOver())
         {
-            Rectangle rec = new Rectangle(textBox.X - origin.X, textBox.Y - origin.Y, textBox.Width, textBox.Height);
+            Rectangle rec = new Rectangle(TextBox.X - OriginTextArea.X, TextBox.Y - OriginTextArea.Y, TextBox.Width, TextBox.Height);
             Raylib.DrawRectangleLinesEx(rec, 3, Color.Beige);
         }
         else {
-            Raylib.DrawRectangleLines((int)textBox.X - (int)origin.X, (int)textBox.Y - (int)origin.Y, (int)textBox.Width, (int)textBox.Height, Color.DarkGray);
+            Raylib.DrawRectangleLines((int)TextBox.X - (int)OriginTextArea.X, (int)TextBox.Y - (int)OriginTextArea.Y, (int)TextBox.Width, (int)TextBox.Height, Color.DarkGray);
         }
 
-        Raylib.DrawText(text, (int)textBox.X + 5 - (int)origin.X, (int)textBox.Y + 8 - (int)origin.Y, (int)(40 * Settings.GetScale()), Color.Black);
+        Raylib.DrawText(_text, (int)TextBox.X + 5 - (int)OriginTextArea.X, (int)TextBox.Y + 8 - (int)OriginTextArea.Y, (int)(40 * Settings.GetScale()), Color.Black);
 
         if (IsTextAreaOnOver()) {
-            framesCounter++;
-            if (((framesCounter / 20) % 2) == 0 && text.Length != maxLength) {
-                Raylib.DrawText("_", (int)((textBox.X + (8 * Settings.GetScale()) - (int)origin.X)) + (int)(Raylib.MeasureText(text, 40) * Settings.GetScale()), (int)((textBox.Y + (12 * Settings.GetScale()) - (int)origin.Y)), (int)(40 * Settings.GetScale()), Color.Brown);
+            _framesCounter++;
+            if (((_framesCounter / 20) % 2) == 0 && _text.Length != _maxLength) {
+                Raylib.DrawText("_", (int)((TextBox.X + (8 * Settings.GetScale()) - (int)OriginTextArea.X)) + (int)(Raylib.MeasureText(_text, 40) * Settings.GetScale()), (int)((TextBox.Y + (12 * Settings.GetScale()) - (int)OriginTextArea.Y)), (int)(40 * Settings.GetScale()), Color.Brown);
             }
         }
         else {
-            framesCounter = 0;
+            _framesCounter = 0;
         }
     }
 
@@ -62,14 +76,14 @@ class TextArea
         }
         else if (origin == Origin.CENTER)
         {
-            return new Vector2(width / 2 * Settings.GetScale(), height / 2 * Settings.GetScale());
+            return new Vector2(_width / 2, _height / 2);
         }
         return new Vector2(0, 0);
     }
 
     public Rectangle GetDestCollisionTextAreaRec()
     {
-        return new Rectangle((int)textBox.X - origin.X, (int)textBox.Y - origin.Y, textBox.Width * Settings.GetScale(), textBox.Height * Settings.GetScale());
+        return new Rectangle((int)TextBox.X - _origin.X, (int)TextBox.Y - _origin.Y, TextBox.Width * Settings.GetScale(), TextBox.Height * Settings.GetScale());
     }
 
     public bool IsTextAreaOnOver()
@@ -91,17 +105,17 @@ class TextArea
             while (key > 0)
             {
                 // NOTE: Only allow keys in range [32..125]
-                if ((key >= 32) && (key <= 125) && (text.Length < maxLength))
+                if ((key >= 32) && (key <= 125) && (_text.Length < _maxLength))
                 {
-                    text += (char)key;
+                    _text += (char)key;
                 }
 
                 key = Raylib.GetCharPressed();  // Check next character in the queue
             }
 
-            if (Raylib.IsKeyPressed(KeyboardKey.Backspace) && text.Length >= 1)
+            if (Raylib.IsKeyPressed(KeyboardKey.Backspace) && _text.Length >= 1)
             {                
-                text = text.Substring(0, text.Length - 1);
+                _text = _text.Substring(0, _text.Length - 1);
             }
         }
     }

@@ -15,6 +15,11 @@ public class CreateCharacterScene : IScene
 
     // Button
     Button okBtn;
+    Button optIconBtn;
+
+    // Scene enfant
+    OptionsScene optionsScene;
+    bool optionsWindows = false;
 
     public CreateCharacterScene() : base(ListeScene.CREATE_CHARACTER)
     {
@@ -34,6 +39,12 @@ public class CreateCharacterScene : IScene
         nameArea.DisplayTextArea();
         okBtn.DisplayButton();
 
+        optIconBtn.DisplayButton();
+        if (optionsWindows)
+        {
+            optionsScene.Draw();
+        }
+
         // End
         Raylib.EndDrawing();
     }
@@ -52,6 +63,11 @@ public class CreateCharacterScene : IScene
 
         // Buttons
         okBtn = new Button("okBtn.png", 640, 550, Origin.CENTER, "buttonStartSound");
+        optIconBtn = new Button("optIconBtn.png", 50, 100, Origin.CENTER, "buttonStartSound");
+
+        // Scene enfant
+        optionsScene = new OptionsScene();
+        optionsScene.LoadScene();
     }
 
     public override void UnloadScene()
@@ -63,21 +79,28 @@ public class CreateCharacterScene : IScene
         nameArea.UpdateTextArea();
 
         if(okBtn.IsButtonPressed()) {
-            string heroName = nameArea.text;
+            string heroName = nameArea._text;
 
             if (heroName.Length > 0)
             {
                 Hero hero = new Hero(heroName);
                 sceneManager.AddScene(new DungeonScene(hero), true);
-            }
-            else { 
-                // Pas de nom
-            }            
+            }           
+        }
+
+        if (optIconBtn.IsButtonPressed()) {
+            optionsWindows = true;
+        }
+
+        if(optionsWindows) {
+            optionsScene.Update();
         }
     }
 
     public override void SignalToScene(string actionName)
     {
-        throw new NotImplementedException();
+        if (actionName.Equals("closeOptions")) {
+            optionsWindows = false;
+        }
     }
 }

@@ -96,7 +96,6 @@ public class OptionsScene : IScene
         Settings.windowWidth = Raylib.GetMonitorWidth(monitor);
         Settings.windowHeight = Raylib.GetMonitorHeight(monitor);
         Settings.isFullScreen = true;
-        sceneManager.LoadActualScene();
     }
 
     private void ToggleScreenResolution(int width, int height)
@@ -109,7 +108,6 @@ public class OptionsScene : IScene
         Settings.windowWidth = width;
         Settings.windowHeight = height;
         Settings.isFullScreen = false;
-        sceneManager.LoadActualScene();
     }
 
 }
