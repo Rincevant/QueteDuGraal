@@ -27,6 +27,8 @@ public class OptionsScene : IScene
         // Start
         //Raylib.BeginDrawing();
 
+        Raylib.DrawRectangle(0, 0, (int)(1280 * Settings.GetScale()), (int)(720 * Settings.GetScale()), new Color(0, 0, 0, 125));
+
         optionsFrame.DrawSprite(0, Color.White, 1);
 
         fullScreen.DisplayButton();

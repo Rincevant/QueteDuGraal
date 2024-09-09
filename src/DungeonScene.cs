@@ -128,18 +128,21 @@ public class DungeonScene : IScene
     public override void  Update()
     {
          // Play music
-        Raylib.UpdateMusicStream(music);
+        Raylib.UpdateMusicStream(music);       
+
+        // Mise à jour scene option
+        if (optionsWindows)
+        {
+            optionsScene.Update();
+            return;
+        }
 
         if (buttonOptions.IsButtonPressed())
         {
             optionsWindows = true;
         }
 
-        if (optionsWindows)
-        {
-            optionsScene.Update();
-        }
-
+        // Avancer
         if (buttonWalk.IsButtonPressed()) {
             int eventValue  = getRandomNumber(1, 10);
 

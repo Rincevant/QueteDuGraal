@@ -41,7 +41,7 @@ class MenuDemarrageScene : IScene
         buttonQuit.DisplayButton();
         buttonOptions.DisplayButton();
 
-        if (optionsWindows) {
+        if (optionsWindows) {            
             optionsScene.Draw();
         }
 
@@ -78,7 +78,18 @@ class MenuDemarrageScene : IScene
     {
         // Play music
         Raylib.UpdateMusicStream(music);
-        
+
+        if (optionsWindows)
+        {
+            optionsScene.Update();
+            return;
+        }
+
+        if (buttonOptions.IsButtonPressed())
+        {
+            optionsWindows = true;
+        }
+
         // Buttons
         if (buttonStart.IsButtonPressed()) {           
             sceneManager.AddScene(new CreateCharacterScene(), true);
@@ -87,17 +98,6 @@ class MenuDemarrageScene : IScene
         if (buttonQuit.IsButtonPressed()) {
             Raylib.WaitTime(0.5);
             Game.quit = true;
-        }
-
-        if (buttonOptions.IsButtonPressed())
-        {
-            optionsWindows = true;
-        }
-
-
-        if(optionsWindows)
-        {
-            optionsScene.Update();
         }
     }
     public override void UnloadScene() {

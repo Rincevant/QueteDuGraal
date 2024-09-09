@@ -76,6 +76,17 @@ public class CreateCharacterScene : IScene
 
     public override void Update()
     {
+        if (optionsWindows)
+        {
+            optionsScene.Update();
+            return;
+        }
+
+        if (optIconBtn.IsButtonPressed())
+        {
+            optionsWindows = true;
+        }        
+
         nameArea.UpdateTextArea();
 
         if(okBtn.IsButtonPressed()) {
@@ -86,15 +97,7 @@ public class CreateCharacterScene : IScene
                 Hero hero = new Hero(heroName);
                 sceneManager.AddScene(new DungeonScene(hero), true);
             }           
-        }
-
-        if (optIconBtn.IsButtonPressed()) {
-            optionsWindows = true;
-        }
-
-        if(optionsWindows) {
-            optionsScene.Update();
-        }
+        }        
     }
 
     public override void SignalToScene(string actionName)
