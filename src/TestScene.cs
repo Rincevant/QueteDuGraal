@@ -63,7 +63,7 @@ public class TestScene : IScene
         
     }
 
-    public override void SignalToScene(string actionName)
+    public override void SignalToScene(TypeSignal typeSignal, object datas)
     {
         throw new NotImplementedException();
     }

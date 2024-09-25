@@ -106,9 +106,9 @@ class MenuDemarrageScene : IScene
         buttonStart.UnloadButton();        
     }
 
-    public override void SignalToScene(string actionName)
+    public override void SignalToScene(TypeSignal signal, object datas)
     {
-        if(actionName.Equals("closeOptions"))
+        if(signal.Equals(TypeSignal.CloseOptions))
         {
             optionsWindows = false;
         }

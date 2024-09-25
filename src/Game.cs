@@ -16,7 +16,8 @@ public class Game {
     public void Initialisation() {
         // Demarrage du jeu
         sceneManager = SceneManager.GetInstance();
-        sceneManager.AddScene(new MenuDemarrageScene(), true);
+        sceneManager.AddScene(new DungeonScene(new Hero("test")), true);
+        //sceneManager.AddScene(new EvenementScene(), true);
     }  
     
     public void Run() {

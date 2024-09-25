@@ -1,5 +1,6 @@
 ﻿using Raylib_cs;
 using System.Numerics;
+using static System.Net.Mime.MediaTypeNames;
 public class Text
 {
 
@@ -33,8 +34,15 @@ public class Text
         Raylib.DrawText(_text, (int)Position.X, (int)Position.Y, FontSize, _color);
     }
 
-    public void DrawTexteWithData(string data)
+    public void DrawTexteWithData(List<string> datas)
     {
-        Raylib.DrawText(_text.Replace("{}", data), (int)Position.X, (int)Position.Y, FontSize, _color);
+        int dataIndex = 0;
+        string textToDisplay = _text;
+        while (textToDisplay.IndexOf("{}") != -1) {
+            int index = textToDisplay.IndexOf("{}");
+            textToDisplay = textToDisplay.Substring(0, index) + datas[dataIndex] + textToDisplay.Substring(index + 2);
+            dataIndex++;
+        }
+        Raylib.DrawText(textToDisplay.Replace("{}", "data"), (int)Position.X, (int)Position.Y, FontSize, _color);
     }
 }

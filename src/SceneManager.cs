@@ -62,7 +62,7 @@ class SceneManager
     public IScene GetSceneByName(string name) {
         foreach (IScene scene in scenes)
         {
-            if(scene.sceneName.Equals(name)){
+            if(scene._sceneName.Equals(name)){
                 return scene;
             }
         }

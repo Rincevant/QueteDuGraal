@@ -10,13 +10,13 @@ public class DungeonScene : IScene
 
     // Butons
     Button buttonWalk;
-    Button buy;
     Button buttonOptions;
 
     Text titreText;
     Text vieText;
     Text goldText;
     Text _heroName;
+    Text tresorGagne;
 
     Music music;
 
@@ -26,14 +26,14 @@ public class DungeonScene : IScene
 
     // 14 Max dans l'affichage actuel
     List<string> logs = new List<string>();
+    int countLog = 0;
 
     // Scene enfant
     OptionsScene optionsScene;
-    bool optionsWindows = false;
+    bool optionsWindow = false;
 
-    int count = 0;
-    int gold = 0;
-    int life = 10;
+    EvenementScene evementScene;
+    bool evenementWindow = false;
 
     // Constructeur qui porte le nom de la scene
     public DungeonScene(Hero hero) : base(ListeScene.SCENE_DUNGEON){
@@ -50,8 +50,8 @@ public class DungeonScene : IScene
         background.DrawSprite(0, Color.White, 1);
 
         titreText.DrawTexte();
-        vieText.DrawTexteWithData(life.ToString());
-        goldText.DrawTexteWithData(gold.ToString());
+        vieText.DrawTexteWithData(new List<string>(2) { _hero._life.ToString(), _hero._maxLife.ToString() });
+        goldText.DrawTexteWithData(new List<string>(1) { _hero.Gold.ToString() });
          
         Raylib.DrawRectanglePro(new Rectangle(textBox.X * Settings.GetScale(), textBox.Y * Settings.GetScale(), textBox.Width * Settings.GetScale(), textBox.Height * Settings.GetScale()), new Vector2(410 * Settings.GetScale(),210 * Settings.GetScale()), 0, Color.DarkGray);
 
@@ -71,12 +71,16 @@ public class DungeonScene : IScene
         }
 
         buttonWalk.DisplayButton();
-        buy.DisplayButton();
         buttonOptions.DisplayButton();
 
-        if (optionsWindows)
+        if (optionsWindow)
         {
             optionsScene.Draw();
+        }
+
+        if(evenementWindow)
+        {
+            evementScene.Draw();
         }
 
         // End
@@ -89,11 +93,10 @@ public class DungeonScene : IScene
 
         // Load texture / sprites
         background = new Sprite("background.png", Settings.initwindowWidth / 2,Settings.initwindowHeight / 2, Origin.CENTER);
-        cadreDonjon = new Sprite("cadreDonjon.png", Settings.initwindowWidth / 2, Settings.initwindowHeight/2, Origin.CENTER);
+        cadreDonjon = new Sprite("cadreDonjon.png", Settings.initwindowWidth / 2, Settings.initwindowHeight/2, Origin.CENTER);        
 
         // Button
-        buttonWalk = new Button("avancerBtn.png", 490,  680 , Origin.CENTER, "buttonStartSound");
-        buy = new Button("buyBtn.png", 790, 680, Origin.CENTER, "buttonStartSound");
+        buttonWalk = new Button("avancerBtn.png", 640,  680 , Origin.CENTER, "buttonStartSound");
         buttonOptions = new Button("optIconBtn.png", 50, 100, Origin.CENTER, "buttonStartSound");
 
         // Gray textbox
@@ -101,14 +104,15 @@ public class DungeonScene : IScene
 
         // Text
         titreText = new Text("Le cimetière", 540, 50, 30, Color.White);
-        vieText = new Text("Points de vie : {}/10", 220, 100, 20, Color.White);
-        goldText = new Text("Or : {}", 950, 100, 20, Color.White);       
+        vieText = new Text("Points de vie : {}/{}", 220, 100, 20, Color.White);
+        goldText = new Text("Or : {}", 950, 100, 20, Color.White);
+        tresorGagne = new Text("Vous trouvez la salle au trésor. Votre butin est de {}", 640, 500, 20, Color.White);
 
         // Hero
         _hero._portrait._position = new Vector2(1150, 100);
         _heroName = new Text(_hero._name, 1150 - (Raylib.MeasureText(_hero._name, 20) / 2), 150, 20, Color.White);
 
-        logs.Add(count + ": Vous découvrez le cimetière. Une brume epaisse vous entoure.");        
+        logs.Add(countLog + ": Vous découvrez le cimetière. Une brume epaisse vous entoure.");        
 
         // Music
         music = Raylib.LoadMusicStream("Resources/Shadowed_Catacombs.mp3");
@@ -118,6 +122,9 @@ public class DungeonScene : IScene
         // Scenes enfant
         optionsScene = new OptionsScene();
         optionsScene.LoadScene();
+
+        evementScene = new EvenementScene();
+        evementScene.LoadScene();
     }
 
     public override void UnloadScene()
@@ -131,91 +138,51 @@ public class DungeonScene : IScene
         Raylib.UpdateMusicStream(music);       
 
         // Mise à jour scene option
-        if (optionsWindows)
+        if (optionsWindow)
         {
             optionsScene.Update();
             return;
         }
 
+        if (evenementWindow)
+        {
+            evementScene.Update();
+            return;
+        }
+
         if (buttonOptions.IsButtonPressed())
         {
-            optionsWindows = true;
+            optionsWindow = true;
         }
 
-        // Avancer
         if (buttonWalk.IsButtonPressed()) {
-            int eventValue  = getRandomNumber(1, 10);
-
-            if(eventValue >= 1 && eventValue <= 6) {
-
-                int eventCoffre  = getRandomNumber(1, 100);
-                if(eventCoffre >=1 && eventCoffre <= 5) {
-                    // Graal
-                    count++;
-                    logs.Add(count + ": Vous avez trouvé le Saint Graal.");
-                    //resetDungeon();
-                    buttonWalk.disable = true;
-                    buy.disable = true;
-                }else if(eventCoffre >=6 && eventCoffre <= 100) {
-                    // Coffre
-                    count++;
-                    logs.Add(count + ": Vous découvez un coffre.");                
-                    int goldGagne  = getRandomNumber(1, 70);
-                    
-                    count++;
-                    logs.Add(count + ": A l'intérieur ce trouve "+goldGagne+" pièces d'or.");
-                    gold += goldGagne;
-                }                
-            } else if(eventValue >= 7 && eventValue <= 10) {
-                // Ennemi
-                count++;
-                logs.Add(count + ": En garde un ennemi vous attaque !");
-
-                count++;
-                logs.Add(count + ": Vous perdez 1 point de vie mais votre ennemi est mort !");
-
-                life--;
+            if(Utils.getRandomNumber(1, 100) > 70)
+            {
+                evenementWindow = true;
+                addLog("Vous trouvez une salle au trèsor.");
+            } else
+            {
+                addLog("Vous avancez dans le donjon.");
             }
+            
         }
-    
-    
-        if(buy.IsButtonPressed()) {
-            if(gold >= 150) {
-                // Achat potion
-                count++;
-                logs.Add(count + ": Vous achetez une potion de vie (+2).");
+    }    
 
-                if(life + 2 >= 10) {
-                    life = 10;
-                } else {
-                    life += 2;
-                }
-
-                gold -= 150;
-            } else {
-                // Achat potion
-                count++;
-                logs.Add(count + ": Vous n'avez pas assez de pièces d'or (150 requis).");
-            }
-        }
-    }
-
-    public int getRandomNumber(int start, int end) {
-        Random generator = new Random();
-        return generator.Next(start, end);
-    }
-
-    public void resetDungeon()
+    public override void SignalToScene(TypeSignal signal, object datas)
     {
-        logs.Clear();
-        gold = 0;
-    }
-
-    public override void SignalToScene(string actionName)
-    {
-        if (actionName.Equals("closeOptions"))
+        if (signal.Equals(TypeSignal.CloseOptions))
         {
-            optionsWindows = false;
+            optionsWindow = false;
         }
+
+        if(signal.Equals(TypeSignal.GetGold)) {
+            _hero.Gold += (int) datas;
+            evenementWindow = false;
+        }
+    }
+
+    private void addLog(string message) {
+        countLog++;
+        logs.Add(countLog + ": " + message);
     }
 }

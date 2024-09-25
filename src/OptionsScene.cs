@@ -17,7 +17,7 @@ public class OptionsScene : IScene
     public bool test = true;
 
     // Constructeur qui porte le nom de la scene
-    public OptionsScene() : base(ListeScene.OPTIONS)
+    public OptionsScene() : base(ListeScene.OPTIONS, true)
     {
         sceneManager = SceneManager.GetInstance();
     }
@@ -58,7 +58,7 @@ public class OptionsScene : IScene
         // Buttons
         if (close.IsButtonPressed())
         {
-            sceneManager.GetCurrentScene().SignalToScene("closeOptions");
+            sceneManager.GetCurrentScene().SignalToScene(TypeSignal.CloseOptions, null);
         }
 
         if(fullScreen.IsButtonPressed())
@@ -81,7 +81,7 @@ public class OptionsScene : IScene
         optionsFrame.unloadTexture();
     }
 
-    public override void SignalToScene(string actionName)
+    public override void SignalToScene(TypeSignal signal, object datas)
     {
         throw new NotImplementedException();
     }
